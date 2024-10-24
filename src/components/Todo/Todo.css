@@ -12,11 +12,13 @@ li {
   list-style: none;
   background-color: black;
   border-radius: 5px;
-  padding: 6px 0;
+  padding: 6px 15px;
   color: white;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   text-align: start;
   margin-bottom: 5px;
  
 }
+
+

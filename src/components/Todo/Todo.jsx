@@ -3,26 +3,25 @@ import "./Todo.css";
 import { useRef, useState } from "react";
 
 function Todo() {
-    const [tasks, setTasks] = useState([])
-    const inputValue = useRef('')
-    const addTask = () => { 
-        
-        setTasks([...tasks,inputValue.current.value]),inputValue.current.value = ''}
-        const deleteTodo = (index) => {
+  const [tasks, setTasks] = useState([]);
+  const inputValue = useRef("");
 
-          const newTasks = [...tasks]
-           newTasks.splice(index, 1)
-          setTasks(newTasks)
-        }
+  const addTask = () => {
+    setTasks([...tasks, inputValue.current.value]),
+      (inputValue.current.value = "");
+  };
+  const deleteTodo = (index) => {
+    const newTasks = [...tasks];
+    newTasks.splice(index, 1);
+    setTasks(newTasks);
+  };
 
-        const editTodo = (index) => {
-            const editTask = tasks.splice(index, 1)
-           inputValue.current.value = editTask
-           const newTasks = [...tasks]
-           setTasks(newTasks)
-        }
-
-   
+  const editTodo = (index) => {
+    const editTask = tasks.splice(index, 1);
+    inputValue.current.value = editTask;
+    const newTasks = [...tasks];
+    setTasks(newTasks);
+  };
 
   return (
     <Container className="d-flex justify-content-center align-items-center">
@@ -43,19 +42,18 @@ function Todo() {
           <ul className="mt-3">
             {tasks.map((task, index) => (
               <li key={index}>
-                <span className="mt-1 ms-0">
-                  <input type="checkbox" className="mx-2" />
-                  {task}
-                </span>
+                <span className="mt-1 ms-0">{task}</span>
 
                 <span>
                   <Button
                     className="me-2 btn-sm btn-danger"
                     onClick={() => deleteTodo(index)}
-            >
+                  >
                     Delete
                   </Button>
-                  <Button className="btn-sm" onClick={()=> editTodo(index)}>Edit</Button>
+                  <Button className="btn-sm" onClick={() => editTodo(index)}>
+                    Edit
+                  </Button>
                 </span>
               </li>
             ))}
