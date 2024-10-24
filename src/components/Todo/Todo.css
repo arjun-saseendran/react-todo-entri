@@ -1,0 +1,22 @@
+.box {
+  background-color: #f5eded;
+  width: 500px;
+  height: 500px;
+  text-align: center;
+}
+
+ul {
+  padding: 0;
+}
+li {
+  list-style: none;
+  background-color: black;
+  border-radius: 5px;
+  padding: 6px 0;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  text-align: start;
+  margin-bottom: 5px;
+ 
+}
