@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 function Todo() {
   const [tasks, setTasks] = useState([]);
   const inputValue = useRef("");
+  const liElement = useRef(undefined);
 
   const addTask = () => {
     setTasks([...tasks, inputValue.current.value]),
@@ -21,6 +22,11 @@ function Todo() {
     inputValue.current.value = editTask;
     const newTasks = [...tasks];
     setTasks(newTasks);
+  };
+
+  const markComplete = () => {
+    liElement.current.style.backgroundColor = "gray";
+    liElement.current.style.textDecoration = "line-through";
   };
 
   return (
@@ -41,8 +47,16 @@ function Todo() {
         <Col>
           <ul className="mt-3">
             {tasks.map((task, index) => (
-              <li key={index}>
-                <span className="mt-1 ms-0">{task}</span>
+              <li key={index} ref={liElement}>
+                <span className="mt-1 ms-0">
+                  <input
+                    type="checkbox"
+                    className="me-1"
+                    onClick={() => markComplete()}
+                  />
+
+                  {task}
+                </span>
 
                 <span>
                   <Button
