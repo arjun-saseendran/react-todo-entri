@@ -1,27 +1,64 @@
 import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import "./Todo.css";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 function Todo() {
-  const [tasks, setTasks] = useState([]);
+  const [task, setTask] = useState([]);
   const inputValue = useRef("");
   const liElement = useRef(undefined);
 
-  const addTask = () => {
-    setTasks([...tasks, inputValue.current.value]),
-      (inputValue.current.value = "");
-  };
-  const deleteTodo = (index) => {
-    const newTasks = [...tasks];
-    newTasks.splice(index, 1);
-    setTasks(newTasks);
+  const renderTodo = async () => {
+    await axios
+      .get("http://localhost:3000")
+      .then((response) => setTask(response.data))
+      .catch((error) => console.log(error));
   };
 
-  const editTodo = (index) => {
-    const editTask = tasks.splice(index, 1);
-    inputValue.current.value = editTask;
-    const newTasks = [...tasks];
-    setTasks(newTasks);
+  useEffect(() => {
+    renderTodo();
+  }, []);
+
+  const addTask = () => {
+    const data = {
+      title: inputValue.current.value,
+      completed: false,
+    };
+
+    axios
+      .post("http://localhost:3000", { data })
+      .then(() => {
+        console.log("Data added to database successfully");
+        renderTodo();
+        inputValue.current.value = "";
+      })
+      .catch((error) => console.log(error));
+  };
+  const deleteTodo = (id) => {
+    axios
+      .delete(`http://localhost:3000/${id}`)
+      .then(() => {
+        renderTodo();
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const editTodo = (title, id) => {
+    inputValue.current.value = title;
+    const updateData = {
+      title: inputValue.current.value,
+      isComplete: false,
+    };
+
+    if (!id) {
+      axios
+        .put(`http://localhost:3000/${id}`, updateData)
+        .then(() => console.log("Updated"))
+        .catch((error) => console.log(error));
+    } else {
+    }
+
+    deleteTodo(id);
   };
 
   const markComplete = () => {
@@ -46,8 +83,8 @@ function Todo() {
         </Col>
         <Col>
           <ul className="mt-3">
-            {tasks.map((task, index) => (
-              <li key={index} ref={liElement}>
+            {task.map((task) => (
+              <li ref={liElement} key={task._id}>
                 <span className="mt-1 ms-0">
                   <input
                     type="checkbox"
@@ -55,17 +92,20 @@ function Todo() {
                     onClick={() => markComplete()}
                   />
 
-                  {task}
+                  {task.title}
                 </span>
 
                 <span>
                   <Button
                     className="me-2 btn-sm btn-danger"
-                    onClick={() => deleteTodo(index)}
+                    onClick={() => deleteTodo(task._id)}
                   >
                     Delete
                   </Button>
-                  <Button className="btn-sm" onClick={() => editTodo(index)}>
+                  <Button
+                    className="btn-sm"
+                    onClick={() => editTodo(task.title, task._id)}
+                  >
                     Edit
                   </Button>
                 </span>
