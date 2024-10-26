@@ -6,7 +6,7 @@ import axios from "axios";
 function Todo() {
   const [task, setTask] = useState([]);
   const inputValue = useRef("");
-  const liElement = useRef(undefined);
+  const [isComplete, setIsComplete] = useState(false);
 
   const renderTodo = async () => {
     await axios
@@ -47,12 +47,11 @@ function Todo() {
     inputValue.current.value = title;
     const updateData = {
       title: inputValue.current.value,
-      isComplete: false,
     };
 
     if (!id) {
       axios
-        .put(`http://localhost:3000/${id}`, updateData)
+        .put(`http://localhost:3000/${id}`, { updateData })
         .then(() => console.log("Updated"))
         .catch((error) => console.log(error));
     } else {
@@ -61,16 +60,38 @@ function Todo() {
     deleteTodo(id);
   };
 
-  const markComplete = () => {
-    liElement.current.style.backgroundColor = "gray";
-    liElement.current.style.textDecoration = "line-through";
+  const markComplete = (id) => {
+    const complete = {
+      completed: isComplete,
+    };
+
+    if (complete.completed) {
+      setIsComplete(false);
+      axios
+        .patch(`http://localhost:3000/${id}`, { complete })
+        .then((res) => {
+          renderTodo();
+        })
+        .catch((error) => console.log(error));
+    } else {
+      setIsComplete(true);
+      axios
+        .patch(`http://localhost:3000/${id}`, { complete })
+        .then(() => {
+          renderTodo();
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   return (
     <Container className="d-flex justify-content-center align-items-center">
       <Row className="d-flex flex-column align-items-center">
+        <h1 className="text-black text-center mt-5 bg-white rounded p-1 w-100">
+          Express Mongoose Todo
+        </h1>
         <Col>
-          <Form.Group className="w-100 mt-5 d-flex ">
+          <Form.Group className="mt-5 d-flex">
             <Form.Control
               ref={inputValue}
               type="text"
@@ -84,29 +105,27 @@ function Todo() {
         <Col>
           <ul className="mt-3">
             {task.map((task) => (
-              <li ref={liElement} key={task._id}>
-                <span className="mt-1 ms-0">
-                  <input
-                    type="checkbox"
-                    className="me-1"
-                    onClick={() => markComplete()}
-                  />
-
-                  {task.title}
-                </span>
+              <li key={task._id} className={task.completed ? "tick" : "untick"}>
+                <span className="">{task.title}</span>
 
                 <span>
                   <Button
-                    className="me-2 btn-sm btn-danger"
-                    onClick={() => deleteTodo(task._id)}
+                    className="btn-sm btn-success me-2"
+                    onClick={() => markComplete(task._id)}
                   >
-                    Delete
+                    Done
                   </Button>
                   <Button
-                    className="btn-sm"
+                    className="btn-sm me-2"
                     onClick={() => editTodo(task.title, task._id)}
                   >
                     Edit
+                  </Button>
+                  <Button
+                    className="btn-sm btn-danger"
+                    onClick={() => deleteTodo(task._id)}
+                  >
+                    Delete
                   </Button>
                 </span>
               </li>
