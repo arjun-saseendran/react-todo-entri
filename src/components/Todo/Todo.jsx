@@ -38,7 +38,7 @@ function Todo() {
   };
   const deleteTodo = (id) => {
     axios
-      .delete(`https://express-mongoose-todo.vercel.app/task${id}`)
+      .delete(`https://express-mongoose-todo.vercel.app/task/${id}`)
       .then(() => {
         renderTodo();
       })
