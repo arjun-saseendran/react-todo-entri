@@ -10,7 +10,9 @@ function Todo() {
 
   const renderTodo = async () => {
     await axios
-      .get("http://localhost:3000/task")
+      .get(
+        "https://express-mongoose-todo.vercel.app/task"
+      )
       .then((response) => setTask(response.data))
       .catch((error) => console.log(error));
   };
@@ -26,7 +28,7 @@ function Todo() {
     };
 
     axios
-      .post("http://localhost:3000/task", { data })
+      .post("https://express-mongoose-todo.vercel.app/task", { data })
       .then(() => {
         console.log("Data added to database successfully");
         renderTodo();
@@ -36,7 +38,7 @@ function Todo() {
   };
   const deleteTodo = (id) => {
     axios
-      .delete(`http://localhost:3000/task/${id}`)
+      .delete(`https://express-mongoose-todo.vercel.app/task${id}`)
       .then(() => {
         renderTodo();
       })
@@ -51,7 +53,9 @@ function Todo() {
 
     if (!id) {
       axios
-        .put(`http://localhost:3000/task/${id}`, { updateData })
+        .put(`https://express-mongoose-todo.vercel.app/task/${id}`, {
+          updateData,
+        })
         .then(() => console.log("Updated"))
         .catch((error) => console.log(error));
     } else {
@@ -68,7 +72,9 @@ function Todo() {
     if (complete.completed) {
       setIsComplete(false);
       axios
-        .patch(`http://localhost:3000/task/${id}`, { complete })
+        .patch(`https://express-mongoose-todo.vercel.app/task/${id}`, {
+          complete,
+        })
         .then((res) => {
           renderTodo();
         })
@@ -76,7 +82,9 @@ function Todo() {
     } else {
       setIsComplete(true);
       axios
-        .patch(`http://localhost:3000/task/${id}`, { complete })
+        .patch(`https://express-mongoose-todo.vercel.app/task/${id}`, {
+          complete,
+        })
         .then(() => {
           renderTodo();
         })
